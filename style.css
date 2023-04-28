@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.myshop {
+  float: left;
+  margin-left: 40px;
+}
+.shop {
+  float: left;
+}
+.clear {
+  clear: both;
+}
+.mycart {
+  float: left;
+  margin-left: 100px;
+  margin-top: 25px;
+}
+#cart {
+  position: absolute;
+}
+#imgg {
+  position: relative;
+  margin-left: 50px;
+  width: 50px;
+}
+img #imgg {
+  width: 30px;
+  height: 30px;
+}

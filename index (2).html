@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="shop">
+      <h1 align="center">My Shop</h1>
+      <div class="myshop">
+        <img src="img2.jpg" width="100px" height="100px" /><br />
+        <p>Humbagar</p>
+        <p>price:5000kyats</p>
+        <br />
+        <button
+          class="addtocart"
+          data-id="1"
+          data-photo="img2.jpg"
+          data-name="Humbagar"
+          data-price="5000"
+        >
+          Add to cart
+        </button>
+      </div>
+
+      <div class="myshop">
+        <img src="img2.jpg" width="100px" height="100px" /><br />
+        <p>Fried Chicken</p>
+        <p>price:2500kyats</p>
+        <br />
+        <button
+          class="addtocart"
+          data-id="2"
+          data-photo="img2.jpg"
+          data-name="Fried Chicken"
+          data-price="2500"
+        >
+          Add to cart
+        </button>
+      </div>
+
+      <div class="myshop">
+        <img src="img4.jpg" width="100px" height="100px" /><br />
+        <p>Fried Rice</p>
+        <p>price:3000kyats</p>
+        <br />
+        <button
+          class="addtocart"
+          data-id="3"
+          data-photo="img4.jpg"
+          data-name="Fried Rice"
+          data-price="3000"
+        >
+          Add to cart
+        </button>
+      </div>
+
+      <div class="clear"></div>
+    </div>
+
+    <div class="mycart">
+      <h1 align="center" style="display: inline">My cart</h1>
+      <img
+        src="http://www.pngmart.com/files/7/Cart-Transparent-PNG.png"
+        width="50px"
+        height="50px"
+        id="imgg"
+      /><span id="cart">0</span>
+
+      <table
+        border="1"
+        cellpadding="23px"
+        style="margin-top: 30px; border-collapse: collapse"
+      >
+        <thead style="background-color: #333; color: white" ;>
+          <th>No</th>
+          <th>Name</th>
+          <th>photo</th>
+          <th>qty</th>
+          <th>price</th>
+          <th>Subtotal</th>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button class="checkout">Check out</button>
+    </div>
+
+    <script type="text/javascript" src="jquery.js"></script>
+    <!-- <script type="text/javascript" src="shop.js"></script> -->
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        showdata();
+        count();
+
+        $(".addtocart").click(function () {
+          var id = $(this).data("id");
+          var photo = $(this).data("photo");
+          var name = $(this).data("name");
+          var price = $(this).data("price");
+
+          // alert(price);
+
+          var item = {
+            id: id,
+            photo: photo,
+            name: name,
+            price: price,
+            qty: 1,
+          };
+
+          // console.log(item)
+
+          var itemlist = localStorage.getItem("items");
+          var ItemArray;
+          if (itemlist == null) {
+            ItemArray = [];
+          } else {
+            ItemArray = JSON.parse(itemlist);
+          }
+          var status = false;
+          $.each(ItemArray, function (i, v) {
+            if (v.id == id) {
+              v.qty++;
+              status = true;
+            }
+          });
+
+          if (!status) {
+            ItemArray.push(item);
+          }
+          var itemString = JSON.stringify(ItemArray);
+          localStorage.setItem("items", itemString);
+          showdata();
+          count();
+        });
+
+        function showdata() {
+          var itemlist = localStorage.getItem("items");
+          var ItemArray = JSON.parse(itemlist);
+          // console.log(ItemArray)
+          var j = 1;
+          var html = "";
+          var total = 0;
+          $.each(ItemArray, function (i, v) {
+            var subtotal = v.qty * v.price;
+            total += subtotal;
+            html += `<tr>
+      <td>${j++}</td>
+      <td>${v.name}</td>
+      <td><img src = "${v.photo}" width="50px" height="50px"></td>
+      <td><button class ="btnincrease" data-id="${i}">+</button>
+      	${v.qty}
+      	<button class="btndecrease"
+      	data-id="${i}"> - </button>
+      </td>
+      <td>${v.price}</td>
+      <td>${subtotal}<button data-id="${i}" class="remove">Remove</td></td>
+      `;
+          });
+          html += `<tr>
+      <td colspan="5">Total</td>
+      <td>${total}</td>
+        </tr>
+      `;
+          $("tbody").html(html);
+        }
+
+        $("tbody").on("click", ".remove", function () {
+          // alert("OK")
+          var id = $(this).data("id");
+          // alert(id)
+          var itemlist = localStorage.getItem("items");
+          var ItemArray = JSON.parse(itemlist);
+          ItemArray.splice(id, 1);
+          var itemString = JSON.stringify(ItemArray);
+          localStorage.setItem("items", itemString);
+
+          showdata();
+          count();
+        });
+
+        function count() {
+          var totalcount = 0;
+          var itemlist = localStorage.getItem("items");
+          var ItemArray = JSON.parse(itemlist);
+
+          $.each(ItemArray, function (i, v) {
+            totalcount += v.qty;
+          });
+          $("#cart").html(totalcount);
+        }
+
+        $("tbody").on("click", ".btnincrease", function () {
+          // alert("Hello")
+          var id = $(this).data("id");
+          var itemlist = localStorage.getItem("items");
+          var ItemArray = JSON.parse(itemlist);
+          console.log(ItemArray);
+          $.each(ItemArray, function (i, v) {
+            if (id == i) {
+              v.qty++;
+            }
+          });
+          var itemString = JSON.stringify(ItemArray);
+          localStorage.setItem("items", itemString);
+          showdata();
+        });
+        $("tbody").on("click", ".btndecrease", function () {
+          // alert("Hello")
+          var id = $(this).data("id");
+          var itemlist = localStorage.getItem("items");
+          var ItemArray = JSON.parse(itemlist);
+          var num = 0;
+          console.log(ItemArray);
+          $.each(ItemArray, function (i, v) {
+            if (id == i) {
+              v.qty--;
+            }
+          });
+          var itemString = JSON.stringify(ItemArray);
+          localStorage.setItem("items", itemString);
+          showdata();
+        });
+      });
+    </script>
+  </body>
+</html>
